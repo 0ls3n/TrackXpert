@@ -35,13 +35,12 @@ Visit the [TrackXpert Pricing Page](https://www.trackxpert.com/pricing) for more
 
 ## Technologies Used
 
-- **Frontend**: Blazor, HTML, CSS, JavaScript
+- **Frontend**: Blazor C#, HTML, CSS, JavaScript
 - **Backend**: ASP.NET Core
-- **Database**: SQL Server / MongoDB
+- **Database**: SQL Server / MSSql
 - **AI Integration**: Custom AI models for feedback task generation
-- **Cloud Storage**: AWS S3 or Azure Blob Storage for track storage
 
 ## Contact
 
-- **Your Name** - [your.email@example.com](mailto:your.email@example.com)
+- **Rasmus Olsen** - [Rasmus782@gmail.com](mailto:Rasmus782@gmail.com)
 - **TrackXpert Website**: [https://www.trackxpert.com](https://www.trackxpert.com)
