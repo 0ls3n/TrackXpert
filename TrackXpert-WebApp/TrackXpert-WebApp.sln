@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackXpert-WebApp", "TrackXpert-WebApp\TrackXpert-WebApp.csproj", "{6BEC6868-410F-4E97-8B3D-54FC050D5BB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackXpert-API", "TrackXpert-API\TrackXpert-API.csproj", "{D827CC9C-F062-47E3-B0A6-9B130DE67EC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{6BEC6868-410F-4E97-8B3D-54FC050D5BB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BEC6868-410F-4E97-8B3D-54FC050D5BB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BEC6868-410F-4E97-8B3D-54FC050D5BB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D827CC9C-F062-47E3-B0A6-9B130DE67EC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D827CC9C-F062-47E3-B0A6-9B130DE67EC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D827CC9C-F062-47E3-B0A6-9B130DE67EC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D827CC9C-F062-47E3-B0A6-9B130DE67EC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
