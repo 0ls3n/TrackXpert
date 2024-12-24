@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using TrackXpert_API.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+string? ConnectionString = builder.Configuration.GetConnectionString("TrackXpertDb");
+builder.Services.AddDbContext<DataContext>(options=> options.UseSqlServer(ConnectionString));
 
 var app = builder.Build();
 

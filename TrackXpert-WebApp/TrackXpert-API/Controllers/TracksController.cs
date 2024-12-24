@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TrackXpert_API.Models;
 
 namespace TrackXpert_API.Controllers
 {
@@ -11,6 +12,12 @@ namespace TrackXpert_API.Controllers
         public IActionResult GetAll()
         {
             return Ok();
+        }
+
+        [HttpPost]
+        public IActionResult UploadTrack([FromBody] Track track)
+        {
+            return Ok(track);
         }
     }
 }
