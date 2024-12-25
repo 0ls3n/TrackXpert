@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TrackXpert_API.Data;
+using TrackXpert_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 
 string? ConnectionString = builder.Configuration.GetConnectionString("TrackXpertDb");
 builder.Services.AddDbContext<DataContext>(options=> options.UseSqlServer(ConnectionString));
+
+builder.Services.AddScoped<ITrackUploadService, TrackUploadService>();
 
 var app = builder.Build();
 

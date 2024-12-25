@@ -11,7 +11,6 @@ public class Artist
     public string? Location { get; set; }
     public string[]? SocialLinks { get; set; }
     public string? WebsiteUrl { get; set; }
-    public Track[]? Tracks { get; set; }
     public string[]? Genres { get; set; }
     public DateTime JoinDate { get; set; }
     public bool IsVerified { get; set; }
