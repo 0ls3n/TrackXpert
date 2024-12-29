@@ -1,7 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
-using TrackXpert_API.Models;
-using TrackXpert_API.Models.TrackData;
+using TrackXpert_ClassLibrary.Models;
+using TrackXpert_ClassLibrary.Models.TrackData;
 
 namespace TrackXpert_API.Data;
 
@@ -24,7 +24,7 @@ public class DataContext : DbContext
             entity.OwnsOne(t => t.Metadata, metadata =>
             {
                 metadata.Property(m => m.Tags).HasConversion(
-                    v => string.Join(',', v), // Convert array to string for storage
+                    v => string.Join(',', v!), // Convert array to string for storage
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)); // Convert back to array
             });
 

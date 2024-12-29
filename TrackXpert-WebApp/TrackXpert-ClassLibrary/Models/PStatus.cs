@@ -1,6 +1,6 @@
 using System;
 
-namespace TrackXpert_API.Models;
+namespace TrackXpert_ClassLibrary.Models;
 
 public enum PStatus
 {

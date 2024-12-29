@@ -1,7 +1,7 @@
 using System;
-using TrackXpert_API.Models.TrackData;
+using TrackXpert_ClassLibrary.Models.TrackData;
 
-namespace TrackXpert_API.Models;
+namespace TrackXpert_ClassLibrary.Models;
 
 public class TrackArtist
 {

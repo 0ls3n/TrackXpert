@@ -1,6 +1,6 @@
 using System;
 
-namespace TrackXpert_API.Models.TrackData;
+namespace TrackXpert_ClassLibrary.Models.TrackData;
 
 public class TrackFileInfo
 {

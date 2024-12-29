@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace TrackXpert_API.Models.TrackData;
+namespace TrackXpert_ClassLibrary.Models.TrackData;
 
 public class TrackMetadata
 {
