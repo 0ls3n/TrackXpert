@@ -21,12 +21,7 @@ public class DataContext : DbContext
 
         modelBuilder.Entity<Track>(entity =>
         {
-            entity.OwnsOne(t => t.Metadata, metadata =>
-            {
-                metadata.Property(m => m.Tags).HasConversion(
-                    v => string.Join(',', v!), // Convert array to string for storage
-                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)); // Convert back to array
-            });
+            entity.OwnsOne(t => t.Metadata);
 
             entity.OwnsOne(t => t.Analytics);
             entity.OwnsOne(t => t.FileInfo);

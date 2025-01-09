@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TrackXpert_API.Data;
+using TrackXpert_ClassLibrary.Models.TrackData;
 
 namespace TrackXpert_API.Controllers
 {
@@ -9,54 +11,50 @@ namespace TrackXpert_API.Controllers
     {
         IConfiguration _config;
 
-        public TracksController(IConfiguration config)
+        private readonly DataContext _context;
+
+        public TracksController(IConfiguration config, DataContext context)
         {
             _config = config;
+            _context = context;
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadFiles(IFormFileCollection files)
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadFiles(IFormFile file)
         {
-            var maxAllowedFiles = 3; // Example limit
             var maxFileSize = 250 * 1024 * 1024; // Max size is 250 MB
             var fileStoragePath = _config.GetValue<string>("FileStorage")!;
             string relativeFilePath = string.Empty;
 
-            if (files.Count > maxAllowedFiles)
-            {
-                return BadRequest($"Error: Attempting to upload {files.Count} files, but only {maxAllowedFiles} files are allowed.");
-            }
 
             var errors = new List<string>();
 
-            foreach (var file in files)
+            try
             {
-                try
+                if (file.Length > maxFileSize)
                 {
-                    if (file.Length > maxFileSize)
-                    {
-                        errors.Add($"File: {file.FileName} exceeds the maximum allowed size of {maxFileSize / 1024 / 1024} MB.");
-                        continue;
-                    }
-
-                    string newFileName = Path.ChangeExtension(
-                        Path.GetRandomFileName(),
-                        Path.GetExtension(file.FileName));
-
-                    relativeFilePath = Path.Combine("tcorey", newFileName);
-
-                    string path = Path.Combine(fileStoragePath, "tcorey", newFileName);
-                    Directory.CreateDirectory(Path.Combine(fileStoragePath, "tcorey"));
-
-                    await using FileStream fs = new(path, FileMode.Create);
-                    await file.CopyToAsync(fs);
+                    errors.Add($"File: {file.FileName} exceeds the maximum allowed size of {maxFileSize / 1024 / 1024} MB.");
                 }
-                catch (Exception ex)
-                {
-                    errors.Add($"File: {file.FileName} Error: {ex.Message}");
-                    relativeFilePath = "";
-                }
+
+                string newFileName = Path.ChangeExtension(
+                    Path.GetRandomFileName(),
+                    Path.GetExtension(file.FileName));
+
+                relativeFilePath = Path.Combine("tcorey", newFileName);
+
+                string path = Path.Combine(fileStoragePath, "tcorey", newFileName);
+                Directory.CreateDirectory(Path.Combine(fileStoragePath, "tcorey"));
+
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.CopyToAsync(fs);
             }
+            catch (Exception ex)
+            {
+                errors.Add($"File: {file.FileName} Error: {ex.Message}");
+                relativeFilePath = "";
+            }
+
 
             if (errors.Count > 0)
             {
@@ -64,6 +62,14 @@ namespace TrackXpert_API.Controllers
             }
 
             return Ok(new { Message = "Files uploaded successfully!", FilePath = relativeFilePath });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTrack([FromBody] Track track)
+        {
+            await _context.Tracks!.AddAsync(track);
+
+            return Ok(track);
         }
     }
 }

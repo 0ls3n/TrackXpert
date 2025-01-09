@@ -1,23 +1,91 @@
 ﻿@rendermode InteractiveServer
+@using TrackXpert_ClassLibrary.Models.TrackData;
 
 @page "/upload-track"
 
 <PageTitle>Upload Track - TrackXpert</PageTitle>
 
-<h1 class="text-center">UploadTrack</h1>
+<h1 class="text-center">Upload your track!</h1>
 
-<div class="container">
-    <InputFile OnChange="@LoadFiles" id="fileInput" class="form-control" multiple="" accept=".wav,.mp3" />
-
-    @if(errors.Count > 0)
+<div class="mx-auto w-50">
+    <div>
+        <label>File: </label>
+        <div class="drop-zone" style="cursor: pointer;">
+            <label for="fileInput" class="drop-zone-content">
+                <p>Drag and drop files here or click to upload</p>
+                <InputFile id="fileInput" class="file-input" style="cursor: pointer;" OnChange="HandleFileSelected" accept=".wav, .mp3" />
+            </label>
+        </div>
+    </div>
+    @if (selectedFile != null)
     {
-        <h2>Errors</h2>
-        <ul class="text-danger">
-            @foreach (var error in errors)
-            {
-                <li>@error</li>
-            }
-        </ul>
-    }
+        <EditForm Model="trackMetadata" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
 
+            <div class="d-flex flex-column gap-3">
+
+                <div>
+                    <label for="@trackMetadata.Title">Song title: </label>
+                    <input @bind-value="trackMetadata.Title" class="form-control" placeholder="Song title" />
+                </div>
+
+                <div>
+                    <label for="@trackMetadata.Genre">Genre: </label>
+                    <input @bind-value="trackMetadata.Genre" class="form-control" placeholder="Genre" />
+                </div>
+
+                <div>
+                    <label for="@trackMetadata.ReleaseDate">Release date: </label>
+                    <br />
+                    <InputDate @bind-Value="trackMetadata.ReleaseDate" />
+                </div>
+
+                <div class="d-flex gap-2 align-content-between">
+                    <div class="w-100">
+                        <label for="@trackMetadata.Key">Key: </label>
+                        <input @bind-value="trackMetadata.Key" class="form-control" placeholder="Key" />
+                    </div>
+
+                    <div class="w-100">
+                        <label for="@trackMetadata.Bpm">BPM: </label>
+                        <input @bind-value="trackMetadata.Bpm" class="form-control" placeholder="BPM" />
+                    </div>
+                </div>
+
+                <div>
+                    <label for="@trackMetadata.Tags">Tags: </label>
+                    <form @onsubmit="AddTag">
+                        <input @oninput="e => CurrentTag = e.Value!.ToString()!" @bind-value="CurrentTag" class="form-control" placeholder="Add a tag" />
+                    </form>
+                </div>
+
+                @if (trackMetadata.Tags!.Count != 0)
+                {
+                    <div>
+                        <ul class="tag-list">
+                            @foreach (var tag in trackMetadata.Tags!)
+                            {
+                                <li class="tag-item">
+                                    @tag <button class="remove-tag" @onclick="() => RemoveTag(tag)">x</button>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <div>
+                    <label for="@trackMetadata.IsExplicit">Is Explicit?: </label>
+                    <input @bind-value="trackMetadata.IsExplicit" type="checkbox" placeholder="Is Explicit?" />
+                </div>
+
+                <div>
+                    <label for="@trackMetadata.Description">Description: </label>
+                    <InputTextArea id="description" class="form-control" @bind-Value="trackMetadata.Description" rows="5" />
+                </div>
+
+                <button class="btn btn-primary w-auto mx-auto" type="submit">Upload track!</button>
+                <ValidationSummary />
+            </div>
+        </EditForm>
+    }
 </div>

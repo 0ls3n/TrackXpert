@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TrackXpert_WebApp.Components;
 using TrackXpert_WebApp.Components.Account;
 using TrackXpert_WebApp.Data;
+using TrackXpert_WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,13 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+builder.Services.AddHttpClient("TrackClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7048/api/tracks");
+});
+
+builder.Services.AddTransient<IUploadService, UploadService>();
 
 var app = builder.Build();
 
