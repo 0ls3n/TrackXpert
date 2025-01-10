@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TrackXpert_API.Data;
 using TrackXpert_ClassLibrary.Models.TrackData;
 
@@ -67,9 +68,32 @@ namespace TrackXpert_API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTrack([FromBody] Track track)
         {
-            await _context.Tracks!.AddAsync(track);
+            try
+            {
+                await _context.Tracks!.AddAsync(track);
+                await _context.SaveChangesAsync();
 
-            return Ok(track);
+				return Ok(track);
+			} catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                List<Track> tracks = await _context.Tracks!.ToListAsync();
+                return Ok(tracks);
+
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components;
@@ -57,41 +58,49 @@ public partial class UploadTrack : ComponentBase
 
     private async Task HandleSubmit()
     {
-        string result = await uploadService!.UploadTrackAsync(selectedFile!, maxFileSize);
-
-        TrackResultModel? trackResult = JsonSerializer.Deserialize<TrackResultModel>(result);
-
-        TrackFileInfo trackFileInfo = new()
+        try
         {
-            PreviewUrl = trackResult.FilePath,
-            Size = selectedFile.Size,
-            Format = selectedFile.Name.Split(".")[1],
-            IsDeleted = false,
-            UploadDate = DateTime.Now
-        };
+            string result = await uploadService!.UploadTrackFileAsync(selectedFile!, maxFileSize);
 
-        TrackAnalytics trackAnalytics = new()
+            TrackResultModel? trackJsonResult = JsonSerializer.Deserialize<TrackResultModel>(result);
+
+            TrackFileInfo trackFileInfo = new()
+            {
+                PreviewUrl = trackJsonResult!.FilePath,
+                Size = selectedFile!.Size,
+                Format = selectedFile.Name.Split(".")[1],
+                IsDeleted = false,
+                UploadDate = DateTime.Now,
+                UpdatedDate = DateTime.Now
+            };
+
+            TrackAnalytics trackAnalytics = new()
+            {
+                FeedbackCount = 0,
+                Likes = 0,
+                PlaybackCount = 0
+            };
+
+            TrackProcessingStatus trackProcessingStatus = new()
+            {
+                ProcessingStatus = TrackXpert_ClassLibrary.Models.PStatus.Uploaded
+            };
+
+            Track track = new Track()
+            {
+                FileInfo = trackFileInfo,
+                Metadata = trackMetadata,
+                Analytics = trackAnalytics,
+                ProcessingStatus = trackProcessingStatus
+            };
+
+            await uploadService.UploadTrackAsync(track);
+
+        }
+        catch (Exception ex)
         {
-            FeedbackCount = 0,
-            Likes = 0,
-            PlaybackCount = 0
-        };
-
-        TrackProcessingStatus trackProcessingStatus = new()
-        {
-            ProcessingStatus = TrackXpert_ClassLibrary.Models.PStatus.Uploaded
-        };
-
-        Track track = new Track()
-        {
-            FileInfo = trackFileInfo,
-            Metadata = trackMetadata,
-            Analytics = trackAnalytics,
-            ProcessingStatus = trackProcessingStatus
-        };
-
-
-
+            Console.WriteLine($"There was an error: {ex.Message}");
+        }
     }
 }
 

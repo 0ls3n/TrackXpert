@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using System.Text.Json;
+using TrackXpert_ClassLibrary.Models.TrackData;
 
 namespace TrackXpert_WebApp.Services
 {
@@ -12,7 +14,7 @@ namespace TrackXpert_WebApp.Services
             _client = httpClientFactory.CreateClient("TrackClient");
         }
 
-        public async Task<string> UploadTrackAsync(IBrowserFile file, long maxFileSize)
+        public async Task<string> UploadTrackFileAsync(IBrowserFile file, long maxFileSize)
         {
             string jsonResult = string.Empty;
 
@@ -48,6 +50,21 @@ namespace TrackXpert_WebApp.Services
             }
 
             return jsonResult;
+        }
+
+        public async Task UploadTrackAsync(Track track)
+        {
+            string data = JsonSerializer.Serialize(track);
+
+            var message = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _client.PostAsync("tracks", message);
+            } catch (Exception ex)
+            {
+                Console.WriteLine($"There was an error: {ex.Message}");
+            }
         }
     }
 }

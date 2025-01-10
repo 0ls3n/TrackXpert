@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrackXpert_API.Data;
 
@@ -11,9 +12,11 @@ using TrackXpert_API.Data;
 namespace TrackXpert_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250110152215_WaveformDataDeleted")]
+    partial class WaveformDataDeleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,14 +180,15 @@ namespace TrackXpert_API.Migrations
                             b1.Property<string>("Description")
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<int>("Genre")
-                                .HasColumnType("int");
+                            b1.Property<string>("Genre")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<bool>("IsExplicit")
                                 .HasColumnType("bit");
 
-                            b1.Property<int>("Key")
-                                .HasColumnType("int");
+                            b1.Property<string>("Key")
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<DateTime>("ReleaseDate")
                                 .HasColumnType("datetime2");
