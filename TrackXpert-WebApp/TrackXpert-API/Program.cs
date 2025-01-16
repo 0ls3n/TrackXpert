@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using TrackXpert_API.Data;
 
@@ -18,26 +19,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-	var jwtSecurityScheme = new OpenApiSecurityScheme
+	options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
 	{
-		BearerFormat = "JWT",
-		Name = "Authorization",
 		In = ParameterLocation.Header,
-		Type = SecuritySchemeType.Http,
-		Scheme = JwtBearerDefaults.AuthenticationScheme,
-		Description = "Enter your JWT access token",
-		Reference = new OpenApiReference
-		{
-			Id = JwtBearerDefaults.AuthenticationScheme,
-			Type = ReferenceType.SecurityScheme
-		}
-	};
-
-	options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
-	options.AddSecurityRequirement(new OpenApiSecurityRequirement
-	{
-		{ jwtSecurityScheme, Array.Empty<string>() }
+		Name = "Authorization",
+		Type = SecuritySchemeType.ApiKey
 	});
+
+	options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
 string? ConnectionString = builder.Configuration.GetConnectionString("TrackXpertDb");
@@ -46,29 +35,10 @@ builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(Conne
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
 
-builder.Services.AddIdentity<User, IdentityRole>()
-	.AddEntityFrameworkStores<ApplicationDbContext>()
-	.AddDefaultTokenProviders();
+builder.Services.AddAuthorization();
 
-builder.Services.AddAuthentication(options =>
-{
-	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidateLifetime = true,
-		ValidateIssuerSigningKey = true,
-		ValidIssuer = builder.Configuration["Jwt:Issuer"],
-		ValidAudience = builder.Configuration["Jwt:Audience"],
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-	};
-});
-
-
+builder.Services.AddIdentityApiEndpoints<User>()
+	.AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -79,8 +49,6 @@ builder.Services.Configure<FormOptions>(options =>
 {
 	options.MultipartBodyLengthLimit = 250 * 1024 * 1024; // 250 MB
 });
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

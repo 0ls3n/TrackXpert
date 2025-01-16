@@ -21,6 +21,7 @@ namespace TrackXpert_API.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpPost("upload")]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> UploadFiles(IFormFile file)
@@ -66,6 +67,7 @@ namespace TrackXpert_API.Controllers
             return Ok(new { Message = "Files uploaded successfully!", FilePath = relativeFilePath });
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateTrack([FromBody] Track track)
         {
@@ -83,8 +85,6 @@ namespace TrackXpert_API.Controllers
             
         }
 
-
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

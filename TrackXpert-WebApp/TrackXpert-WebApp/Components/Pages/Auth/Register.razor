@@ -1,0 +1,58 @@
+﻿@using TrackXpert_WebApp.Services
+@inject IAuthenticationService Authentication
+@inject NavigationManager Navigation
+
+<EditForm Model="UserModel" OnValidSubmit="HandleSubmit">
+	<DataAnnotationsValidator/>
+	<!-- Email input -->
+	<div data-mdb-input-init class="form-outline mb-4">
+		<label class="form-label" for="registerEmail">Email</label>
+		<input @bind-value="UserModel!.Email" class="form-control" />
+
+	</div>
+
+	<!-- Password input -->
+	<div data-mdb-input-init class="form-outline mb-4">
+		<label class="form-label" for="registerPassword">Password</label>
+		<input @bind-value="UserModel.Password" type="password" class="form-control" />
+
+	</div>
+
+	<!-- Repeat Password input -->
+	<div data-mdb-input-init class="form-outline mb-4">
+		<label class="form-label" for="registerRepeatPassword">Repeat password</label>
+		<input @bind-value="UserModel.PasswordConfirmation" type="password" class="form-control" />
+	</div>
+
+	<!-- Checkbox -->
+	<div class="form-check d-flex justify-content-center mb-4">
+		<InputCheckbox class="form-check-input me-2" type="checkbox" @bind-value="UserModel.AgreeTerms"/>
+		<label class="form-check-label" for="registerCheck">
+			I have read and agree to the terms
+		</label>
+	</div>
+
+	<!-- Submit button -->
+	<button type="submit" class="btn btn-primary mb-3 w-100">Register</button>
+
+	<ValidationSummary/>
+</EditForm>
+
+@code {
+
+	private UserRegistrationModel? UserModel { get; set; } = new();
+
+	private async Task HandleSubmit()
+	{
+		string response = await Authentication.RegisterAsync(UserModel!);
+
+		if (response == "success")
+		{
+			Navigation.NavigateTo("/");
+		} else {
+
+		}
+	}
+
+	
+}

@@ -1,0 +1,58 @@
+﻿@rendermode InteractiveServer
+@page "/auth"
+
+<PageTitle>Login/Register</PageTitle>
+
+<div class="d-flex">
+	<div class="w-25 d-flex flex-column gap-4">
+
+		<ul class="nav nav-pills nav-justified mb-3">
+			<li class="nav-item">
+				<button class="nav-link @loginButtonActive" @onclick="ShowLogin">Login</button>
+			</li>
+			<li class="nav-item">
+				<button class="nav-link @registerButtonActive" @onclick="ShowRegister">Register</button>
+			</li>
+		</ul>
+
+		@if (isLogin)
+		{
+			<h1 class="text-center">Login</h1>
+		}
+		else
+		{
+			<h1 class="text-center">Register</h1>
+		}
+
+		@if (isLogin)
+		{
+			<Login />
+		}
+		else
+		{
+			<Register />
+		}
+
+	</div>
+</div>
+
+@code {
+
+	bool isLogin = true;
+	string loginButtonActive = "active";
+	string registerButtonActive = string.Empty;
+
+	private void ShowLogin()
+	{
+		isLogin = true;
+		registerButtonActive = string.Empty;
+		loginButtonActive = "active";
+	}
+
+	private void ShowRegister()
+	{
+		isLogin = false;
+		registerButtonActive = "active";
+		loginButtonActive = string.Empty;
+	}
+}
