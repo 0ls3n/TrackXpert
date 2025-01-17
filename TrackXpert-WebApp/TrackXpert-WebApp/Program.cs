@@ -15,7 +15,7 @@ builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddHttpClient("AuthClient", client =>
 {
-	client.BaseAddress = new Uri("https://localhost:7048/auth/");
+	client.BaseAddress = new Uri("https://localhost:7048/api/auth/");
 });
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();

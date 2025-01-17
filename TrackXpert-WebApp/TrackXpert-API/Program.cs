@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -33,12 +34,37 @@ string? ConnectionString = builder.Configuration.GetConnectionString("TrackXpert
 
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(ConnectionString));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+{ 
+	options.UseSqlServer(ConnectionString); 
+});
 
-builder.Services.AddAuthorization();
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
-builder.Services.AddIdentityApiEndpoints<User>()
-	.AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+	options.SignIn.RequireConfirmedEmail = true;
+});
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateLifetime = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = builder.Configuration["Jwt:Issuer"],
+		ValidAudience = builder.Configuration["Jwt:Audience"],
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+	};
+});
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -49,6 +75,8 @@ builder.Services.Configure<FormOptions>(options =>
 {
 	options.MultipartBodyLengthLimit = 250 * 1024 * 1024; // 250 MB
 });
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
