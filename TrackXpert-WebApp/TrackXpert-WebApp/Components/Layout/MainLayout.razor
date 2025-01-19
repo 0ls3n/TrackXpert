@@ -1,8 +1,11 @@
-﻿@inherits LayoutComponentBase
+﻿@using TrackXpert_WebApp.Services;
+
+@inherits LayoutComponentBase
+@inject TokenService TokenService;
 
 <div class="page">
 
-    <TopNavBar/>
+    <TopNavBar />
 
     <main>
 
@@ -11,4 +14,3 @@
         </article>
     </main>
 </div>
-

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using TrackXpert_API.Data;
 using TrackXpert_API.Models;
 
@@ -42,9 +44,14 @@ namespace TrackXpert_API.Controllers
                 return Unauthorized("Email not confirmed. Please check your email to confirm your account.");
             }
 
-            var token = JwtTokenGenerator.GenerateToken(user, _configuration);
+            var accessToken = JwtTokenGenerator.GenerateToken(user, _configuration);
 
-            return Ok(new { accessToken = token });
+            var refreshToken = GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new { accessToken, refreshToken });
         }
 
         [HttpPost("register")]
@@ -101,6 +108,38 @@ namespace TrackXpert_API.Controllers
             {
                 return NotFound("The user is not found");
             }
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto refreshToken)
+        {
+            if (refreshToken == null || string.IsNullOrEmpty(refreshToken.RefreshToken))
+            {
+                return BadRequest("Invalid request");
+            }
+
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshToken == refreshToken.RefreshToken);
+            if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return Unauthorized("Invalid or expired refresh token");
+            }
+
+            var newAccessToken = JwtTokenGenerator.GenerateToken(user, _configuration);
+
+            var newRefreshToken = GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new { accessToken = newAccessToken, refreshToken = newRefreshToken });
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[128];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

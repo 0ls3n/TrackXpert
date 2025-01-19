@@ -1,4 +1,6 @@
 ﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using TrackXpert_WebApp.Services;
 
@@ -6,22 +8,22 @@ namespace TrackXpert_WebApp.Handlers
 {
 	public class AuthorizationMessageHandler : DelegatingHandler
 	{
-		private readonly ILocalStorageService _localStorageService;
 		private readonly IAuthenticationService _authenticationService;
+		private readonly TokenService _tokenService;
 
-		public AuthorizationMessageHandler(ILocalStorageService localStorageService, IAuthenticationService authenticationService)
+		public AuthorizationMessageHandler(IAuthenticationService authenticationService, TokenService tokenService)
 		{
-			_localStorageService = localStorageService;
 			_authenticationService = authenticationService;
+			_tokenService = tokenService;
 		}
 
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 		{
-			var token = await _localStorageService.GetItemAsync<string>("accessToken");
+			string? token = _tokenService.GetToken(TokenService.TokenType.ACCESS_TOKEN);
 
-			if (!string.IsNullOrEmpty(token) && _authenticationService.IsTokenExpired(token))
+			if (!string.IsNullOrEmpty(token) && _tokenService.IsTokenExpired(token))
 			{
-				token = await _authenticationService.RefreshToken();
+				token = await _authenticationService.RefreshTokenAsync();
 			}
 
 			if (!string.IsNullOrEmpty(token))

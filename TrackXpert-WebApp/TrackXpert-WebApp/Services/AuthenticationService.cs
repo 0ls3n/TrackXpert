@@ -1,24 +1,23 @@
 ﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TrackXpert_WebApp.Components.Pages.Auth;
+using TrackXpert_WebApp.Handlers;
 
 namespace TrackXpert_WebApp.Services
 {
 	public class AuthenticationService : IAuthenticationService
 	{
-		public bool IsAuthorized { get; private set; }
-		public ClaimsPrincipal? User { get; private set; }
-
 		private readonly HttpClient _client;
-		private readonly ILocalStorageService _localStorageService;
+		private readonly TokenService _tokenService;
 
-		public AuthenticationService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService)
+		public AuthenticationService(IHttpClientFactory httpClientFactory, TokenService tokenService)
 		{
 			_client = httpClientFactory.CreateClient("AuthClient");
-			_localStorageService = localStorageService;
+			_tokenService = tokenService;
 		}
 
 		public async Task<string> LoginAsync(UserLoginModel user)
@@ -35,10 +34,10 @@ namespace TrackXpert_WebApp.Services
 
 					var token = JsonSerializer.Deserialize<UserToken>(result);
 
-					await _localStorageService.SetItemAsync("accessToken", token.AccessToken);
-					await _localStorageService.SetItemAsync("refreshToken", token.RefreshToken);
+					await _tokenService.SetTokenAsync(token.AccessToken, TokenService.TokenType.ACCESS_TOKEN);
+					await _tokenService.SetTokenAsync(token.RefreshToken, TokenService.TokenType.REFRESH_TOKEN);
 
-					LoadUserFromToken(token.AccessToken);
+					_tokenService.LoadUserFromToken(token.AccessToken);
 
 					return "success";
 				}
@@ -81,34 +80,16 @@ namespace TrackXpert_WebApp.Services
 
 		public async Task SignOut()
 		{
-			await _localStorageService.RemoveItemAsync("accessToken");
-			await _localStorageService.RemoveItemAsync("refreshToken");
+			await _tokenService.RemoveTokenAsync("accessToken", TokenService.TokenType.ACCESS_TOKEN);
+			await _tokenService.RemoveTokenAsync("refreshToken", TokenService.TokenType.REFRESH_TOKEN);
 
-			User = null;
-			IsAuthorized = false;
+			_tokenService.ResetUserClaim();
+
 		}
 
-		private void LoadUserFromToken(string accessToken)
+		public async Task<string> RefreshTokenAsync()
 		{
-			if (string.IsNullOrEmpty(accessToken))
-			{
-				IsAuthorized = false;
-				User = null;
-				return;
-			}
-
-			var handler = new JwtSecurityTokenHandler();
-			var jwt = handler.ReadJwtToken(accessToken);
-
-			var identity = new ClaimsIdentity(jwt.Claims, "jwt");
-			User = new ClaimsPrincipal(identity);
-
-			IsAuthorized = true;
-		}
-
-		public async Task<string> RefreshToken()
-		{
-			var refreshToken = await _localStorageService.GetItemAsync<string>("refreshToken");
+			var refreshToken = _tokenService.GetToken(TokenService.TokenType.REFRESH_TOKEN);
 			if (string.IsNullOrEmpty(refreshToken)) return "No refresh token found.";
 
 			try
@@ -121,10 +102,10 @@ namespace TrackXpert_WebApp.Services
 					var result = await response.Content.ReadAsStringAsync();
 					var token = JsonSerializer.Deserialize<UserToken>(result);
 
-					await _localStorageService.SetItemAsync("authToken", token.AccessToken);
-					await _localStorageService.SetItemAsync("refreshToken", token.RefreshToken);
+					await _tokenService.SetTokenAsync(token.AccessToken, TokenService.TokenType.ACCESS_TOKEN);
+					await _tokenService.SetTokenAsync(token.RefreshToken, TokenService.TokenType.REFRESH_TOKEN);
 
-					LoadUserFromToken(token.AccessToken);
+					_tokenService.LoadUserFromToken(token.AccessToken);
 
 					return token.AccessToken;
 				}
@@ -135,15 +116,6 @@ namespace TrackXpert_WebApp.Services
 			{
 				return ex.Message;
 			}
-		}
-
-		public bool IsTokenExpired(string token)
-		{
-			var handler = new JwtSecurityTokenHandler();
-			var jwtToken = handler.ReadJwtToken(token);
-
-			// Check if token is near expiration (e.g., within 1 minute)
-			return jwtToken.ValidTo <= DateTime.UtcNow.AddMinutes(-1);
 		}
 
 		struct UserToken

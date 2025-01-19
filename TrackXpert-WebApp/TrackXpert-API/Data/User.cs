@@ -5,6 +5,7 @@ namespace TrackXpert_API.Data
 {
 	public class User : IdentityUser
 	{
-		// Add custom fields here
+		public string? RefreshToken { get; set; }
+		public DateTime RefreshTokenExpiryTime { get; set; }
 	}
 }

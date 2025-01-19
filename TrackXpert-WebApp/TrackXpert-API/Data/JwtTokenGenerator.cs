@@ -12,9 +12,13 @@ namespace TrackXpert_API.Data
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Unique user ID
+                new Claim(ClaimTypes.Email, user.Email!),                 // User email
+                new Claim(ClaimTypes.Name,  user.Email!), // User name or email
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Unique token ID
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // Subject claim (optional but recommended)
+                new Claim(JwtRegisteredClaimNames.Iat,
+                    new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64) // Issued at timestamp
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));

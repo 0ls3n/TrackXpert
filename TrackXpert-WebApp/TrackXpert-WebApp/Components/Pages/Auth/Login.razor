@@ -1,10 +1,20 @@
-﻿@using TrackXpert_WebApp.Services;
+﻿@rendermode InteractiveServer
+
+@using TrackXpert_WebApp.Handlers
+@using TrackXpert_WebApp.Services;
 @inject IAuthenticationService Authentication;
 @inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+
 
 
 <EditForm Model="UserModel" OnValidSubmit="HandleSubmit">
 	<DataAnnotationsValidator/>
+	<ValidationSummary />
+	@if (errorMessage != null)
+	{
+		<p class="text-danger">@errorMessage</p>
+	}
 	<!-- Email input -->
 	<div data-mdb-input-init class="form-outline mb-4">
 		<label class="form-label" for="loginName">Email</label>
@@ -36,12 +46,14 @@
 	<!-- Submit button -->
 	<button type="submit" class="btn btn-primary w-100 mb-4">Sign in</button>
 
-	<ValidationSummary/>
+	
 </EditForm>
 
 @code {
 
 	private UserLoginModel? UserModel { get; set; } = new();
+
+	private string? errorMessage = null;
 
 	private async Task HandleSubmit()
 	{
@@ -49,10 +61,14 @@
 
 		if (response == "success")
 		{
+			if (AuthenticationStateProvider is CustomAuthenticationStateProvider authStateProvider)
+			{
+				authStateProvider.NotifyUserAuthentication();
+			}
 			NavigationManager.NavigateTo("/");
 		} else 
 		{
-			// BUHU
+			errorMessage = response;
 		}
 	}
 

@@ -1,5 +1,9 @@
-﻿@rendermode InteractiveServer
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Authentication.JwtBearer
+
+@rendermode InteractiveServer
 @page "/upload-track"
+@attribute [Authorize]
 
 <PageTitle>Upload Track - TrackXpert</PageTitle>
 
