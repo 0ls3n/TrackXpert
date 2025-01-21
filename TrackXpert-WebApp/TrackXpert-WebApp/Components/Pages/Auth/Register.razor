@@ -1,42 +1,68 @@
-﻿@using TrackXpert_WebApp.Services
+﻿@rendermode InteractiveServer
+
+@using TrackXpert_WebApp.Services
+@page "/auth/register"
+
 @inject IAuthenticationService Authentication
 @inject NavigationManager Navigation
 
-<EditForm Model="UserModel" OnValidSubmit="HandleSubmit">
-	<DataAnnotationsValidator/>
-	<!-- Email input -->
-	<div data-mdb-input-init class="form-outline mb-4">
-		<label class="form-label" for="registerEmail">Email</label>
-		<input @bind-value="UserModel!.Email" class="form-control" />
+<PageTitle>Register</PageTitle>
 
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+	<div class="sm:mx-auto sm:w-full sm:max-w-sm">
+		<img class="mx-auto h-16 w-auto" src="/images/logo.png" alt="Your Company">
+		<h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">Register as a new account</h2>
 	</div>
 
-	<!-- Password input -->
-	<div data-mdb-input-init class="form-outline mb-4">
-		<label class="form-label" for="registerPassword">Password</label>
-		<input @bind-value="UserModel.Password" type="password" class="form-control" />
+	<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+		<EditForm class="space-y-6" Model="UserModel" OnValidSubmit="HandleSubmit">
+			<DataAnnotationsValidator />
+			<ValidationSummary/>
+			<div>
+				<label class="block text-sm/6 font-medium text-gray-900 dark:text-white">Email address</label>
+				<div class="mt-2">
+					<input @bind-value="UserModel!.Email" type="email" autocomplete="email"
+						class="block w-full rounded-md dark:bg-zinc-900 px-3 py-1.5 text-base text-gray-900 dark:text-white outline outline-1 -outline-offset-1 outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 sm:text-sm/6">
+				</div>
+			</div>
 
+			<div>
+				<div class="flex items-center justify-between">
+					<label class="block text-sm/6 font-medium text-gray-900 dark:text-white">Password</label>
+					
+				</div>
+				<div class="mt-2">
+					<input @bind-value="UserModel!.Password" type="password" 
+						autocomplete="current-password"
+						class="block w-full rounded-md bg-white dark:bg-zinc-900 px-3 py-1.5 text-base text-gray-900 dark:text-white outline outline-1 -outline-offset-1 outline-zinc-500 dark:outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 sm:text-sm/6">
+				</div>
+			</div>
+
+			<div>
+				<div class="flex items-center justify-between">
+					<label class="block text-sm/6 font-medium text-gray-900 dark:text-white">Confirm Password</label>
+					
+				</div>
+				<div class="mt-2">
+					<input @bind-value="UserModel!.PasswordConfirmation" type="password"
+						autocomplete="current-password"
+						class="block w-full rounded-md bg-white dark:bg-zinc-900 px-3 py-1.5 text-base text-gray-900 dark:text-white outline outline-1 -outline-offset-1 outline-zinc-500 dark:outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 sm:text-sm/6">
+				</div>
+			</div>
+			
+			<div>
+				<button type="submit"
+					class="flex w-full justify-center rounded-md bg-purple-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600">Register</button>
+			</div>
+		</EditForm>
+
+		<p class="mt-10 text-center text-sm/6 text-gray-500">
+			Already have an account?
+			<a href="/auth/login" class="font-semibold text-cyan-500 hover:text-cyan-300">Click here to
+				login!</a>
+		</p>
 	</div>
-
-	<!-- Repeat Password input -->
-	<div data-mdb-input-init class="form-outline mb-4">
-		<label class="form-label" for="registerRepeatPassword">Repeat password</label>
-		<input @bind-value="UserModel.PasswordConfirmation" type="password" class="form-control" />
-	</div>
-
-	<!-- Checkbox -->
-	<div class="form-check d-flex justify-content-center mb-4">
-		<InputCheckbox class="form-check-input me-2" type="checkbox" @bind-value="UserModel.AgreeTerms"/>
-		<label class="form-check-label" for="registerCheck">
-			I have read and agree to the terms
-		</label>
-	</div>
-
-	<!-- Submit button -->
-	<button type="submit" class="btn btn-primary mb-3 w-100">Register</button>
-
-	<ValidationSummary/>
-</EditForm>
+</div>
 
 @code {
 

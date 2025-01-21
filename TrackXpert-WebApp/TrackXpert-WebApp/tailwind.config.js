@@ -3,10 +3,17 @@ module.exports = {
     content: [
         "./Pages/**/*.{razor,html}",
         "./Components/**/*.{razor,html}",
-        "./wwwroot/index.html"
+        "./Layout/**/*.{razor,html}",
+        "./wwwroot/index.html",
+        './node_modules/preline/dist/*.js'
     ],
     theme: {
         extend: {},
     },
-    plugins: [],
+    plugins: [
+        require('@tailwindcss/forms'),
+        require('preline/plugin'),
+    ],
+
+    darkMode: 'media',
 }
