@@ -35,7 +35,7 @@ Visit the [TrackXpert Pricing Page](https://www.trackxpert.com/pricing) for more
 
 ## Technologies Used
 
-- **Frontend**: Blazor C#, HTML, CSS, JavaScript
+- **Frontend**: Blazor C#, HTML, TailwindCSS, JavaScript
 - **Backend**: ASP.NET Core
 - **Database**: SQL Server / MSSql
 - **AI Integration**: Custom AI models for feedback task generation
