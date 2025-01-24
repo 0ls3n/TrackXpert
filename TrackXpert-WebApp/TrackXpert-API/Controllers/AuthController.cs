@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using System.Net;
 using System.Net.Mail;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -79,8 +80,39 @@ namespace TrackXpert_API.Controllers
             Console.WriteLine(confirmationLink);
 
             // Emailsender service here to send the confirmation link to the users mail account
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
+            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential("Rasmus782@gmail.com", "nlgd xugb tahd dvva"),
+                EnableSsl = true
+            };
 
+            MailMessage mailMessage = new MailMessage()
+            {
+                From = new MailAddress("Rasmus782@gmail.com"),
+                Subject = "Confirmation email",
+                Body = @"
+                        <html>
+                        <body style='background-color: #1c1c1c; color: #ffffff; font-family: Arial, sans-serif; padding: 20px; text-align: center;'>
+                            <div style='max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; background-color: #2c2c2c;'>
+                                <img src='https://drive.google.com/uc?id=1UzqjX47F9E9DwH6gP25eicWmvWfrc76Y' alt='TrackXpert Logo' style='margin-bottom: 20px; width: 64px; height: 64px;'>
+                                <h2 style='color: #ffffff; font-size: 24px; margin: 0;'>Confirm Your Email</h2>
+                                <p style='color: #b3b3b3; font-size: 16px; margin: 20px 0;'>Hi there! You're just one step away from accessing your TrackXpert account. Please click the button below to confirm your email address:</p>
+                                <a href='" + confirmationLink + @"'
+                                   style='display: inline-block; background-color: #8e44ad; color: #ffffff; text-decoration: none; 
+                                          padding: 12px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;'>
+                                   Confirm Email
+                                </a>
+                                <p style='color: #757575; font-size: 12px; margin-top: 20px;'>If you didn’t sign up for TrackXpert, you can safely ignore this email.</p>
+                            </div>
+                        </body>
+                        </html>",
+                IsBodyHtml = true
+            };
+
+            mailMessage.To.Add(user.Email!);
+
+            smtpClient.Send(mailMessage);
 
             return Ok("Registration successful! Please check your email to confirm your account.");
         }
@@ -98,7 +130,8 @@ namespace TrackXpert_API.Controllers
 
                     if (identity.Succeeded)
                     {
-                        return Ok();
+                        var blazorAppUrl = $"https://localhost:7139";
+                        return Redirect(blazorAppUrl);
                     }
 
                     return BadRequest(identity.Errors);
