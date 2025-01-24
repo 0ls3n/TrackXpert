@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using TrackXpert_WebApp.Components.Pages.Dashboard.Layout;
+@page "/Dashboard"
+@layout DashboardLayout;
+
+@attribute [Authorize]
+
+<PageTitle>Dashboard</PageTitle>
+
+<h1 class="text-center dark:text-white text-5xl">Dashboard</h1>
+

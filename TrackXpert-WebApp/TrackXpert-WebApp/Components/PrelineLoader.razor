@@ -1,0 +1,14 @@
+﻿@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        if (isFirstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("loadScript", "https://cdn.jsdelivr.net/npm/preline/dist/preline.js");
+
+            await JSRuntime.InvokeVoidAsync("window.HSStaticMethods.autoInit");
+        }
+    }
+}

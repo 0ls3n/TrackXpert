@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using System.Net.Mail;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using TrackXpert_API.Data;
@@ -28,7 +30,7 @@ namespace TrackXpert_API.Controllers
             var user = await _userManager.FindByEmailAsync(loginDto.Email!);
             if (user == null)
             {
-                return Unauthorized("User not found");
+                return Unauthorized("Email or password is incorrect!");
             }
 
             // Check Password
@@ -36,7 +38,7 @@ namespace TrackXpert_API.Controllers
 
             if (!isPasswordValid)
             {
-                return Unauthorized("Invalid credentials");
+                return Unauthorized("Email or password is incorrect!");
             }
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
@@ -57,6 +59,7 @@ namespace TrackXpert_API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
+            // Make a check on if the user already exists, if it does then throw an error message
             var user = new User { UserName = registerDto.Email, Email = registerDto.Email };
             var result = await _userManager.CreateAsync(user, registerDto.Password!);
 
@@ -76,6 +79,8 @@ namespace TrackXpert_API.Controllers
             Console.WriteLine(confirmationLink);
 
             // Emailsender service here to send the confirmation link to the users mail account
+            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
+
 
             return Ok("Registration successful! Please check your email to confirm your account.");
         }

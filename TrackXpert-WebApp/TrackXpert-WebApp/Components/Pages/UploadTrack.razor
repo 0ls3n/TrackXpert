@@ -1,8 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Authentication.JwtBearer
+@using TrackXpert_WebApp.Components.Pages.Dashboard.Layout
 
 @rendermode InteractiveServer
 @page "/upload-track"
+@layout DashboardLayout
 @attribute [Authorize]
 
 <PageTitle>Upload Track - TrackXpert</PageTitle>

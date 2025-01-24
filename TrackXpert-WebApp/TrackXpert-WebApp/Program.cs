@@ -70,6 +70,8 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStatusCodePagesWithReExecute("/notfound");
+
 app.UseAntiforgery();
 
 app.UseHttpsRedirection();
