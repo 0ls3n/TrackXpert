@@ -1138,10 +1138,6 @@ select {
   height: 2rem;
 }
 
-.h-auto {
-  height: auto;
-}
-
 .h-full {
   height: 100%;
 }
@@ -1166,8 +1162,8 @@ select {
   width: 2.5rem;
 }
 
-.w-28 {
-  width: 7rem;
+.w-12 {
+  width: 3rem;
 }
 
 .w-8 {
@@ -1193,10 +1189,6 @@ select {
 
 .w-full {
   width: 100%;
-}
-
-.w-12 {
-  width: 3rem;
 }
 
 .min-w-60 {
@@ -1639,14 +1631,6 @@ select {
 
 .fill-black {
   fill: #000;
-}
-
-.fill-blue-600 {
-  fill: #2563eb;
-}
-
-.stroke-blue-600 {
-  stroke: #2563eb;
 }
 
 .p-1 {
@@ -2755,6 +2739,11 @@ select {
     line-height: 2.25rem;
   }
 
+  .sm\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
+  }
+
   .sm\:text-9xl {
     font-size: 8rem;
     line-height: 1;
@@ -2768,6 +2757,16 @@ select {
   .sm\:text-sm\/6 {
     font-size: 0.875rem;
     line-height: 1.5rem;
+  }
+
+  .sm\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+
+  .sm\:text-6xl {
+    font-size: 3.75rem;
+    line-height: 1;
   }
 
   .sm\:shadow-md {
@@ -3012,14 +3011,6 @@ select {
 
   .dark\:fill-neutral-200 {
     fill: #e5e5e5;
-  }
-
-  .dark\:fill-white {
-    fill: #fff;
-  }
-
-  .dark\:stroke-white {
-    stroke: #fff;
   }
 
   .dark\:text-blue-500 {

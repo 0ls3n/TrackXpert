@@ -10,226 +10,271 @@
 <PageTitle>Register</PageTitle>
 
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-	<div class="sm:mx-auto sm:w-full sm:max-w-sm">
-		<img class="mx-auto h-16 w-auto" src="/images/logo.png" alt="Your Company">
-		<h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">Register as a
-			new account</h2>
-	</div>
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <img class="mx-auto h-24 w-auto" src="/images/logo.png" alt="Your Company">
+        <h2 class="text-2xl/9 mt-10 text-center font-bold tracking-tight text-gray-900 dark:text-white">
+            Register as a
+            new account
+        </h2>
+    </div>
 
-	<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-		<EditForm class="space-y-6" Model="UserModel" OnValidSubmit="HandleSubmit">
-			<DataAnnotationsValidator />
-			<ValidationSummary />
-			<div>
-				<label class="block text-sm/6 font-medium text-gray-900 dark:text-white">Email address</label>
-				<div class="mt-2">
-					<input @bind-value="UserModel!.Email" type="email" autocomplete="email"
-						class="block w-full rounded-md dark:bg-zinc-900 px-3 py-1.5 text-base text-gray-900 dark:text-white outline outline-1 -outline-offset-1 outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 sm:text-sm/6">
-				</div>
-			</div>
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <EditForm class="space-y-6" Model="UserModel" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div>
+                <label class="text-sm/6 block font-medium text-gray-900 dark:text-white">Email address</label>
+                <div class="mt-2">
+                    <input @bind-value="UserModel!.Email" type="email" autocomplete="email" placeholder="Enter email address"
+                           class="outline-1 -outline-offset-1 block w-full rounded-md px-3 py-1.5 text-base text-gray-900 outline outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 dark:bg-zinc-900 dark:text-white sm:text-sm/6">
+                </div>
+            </div>
 
-			<div>
-				<div class="flex items-center justify-between">
-					<label class="block text-sm/6 font-medium text-gray-900 dark:text-white">Password</label>
+            <div class="flex flex-row gap-2">
+                <div>
+                    <label class="text-sm/6 block font-medium text-gray-900 dark:text-white">First name</label>
+                    <div class="mt-2">
+                        <input @bind-value="UserModel!.Firstname" type="text" placeholder="Enter your first name"
+                               class="outline-1 -outline-offset-1 block w-full rounded-md px-3 py-1.5 text-base text-gray-900 outline outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 dark:bg-zinc-900 dark:text-white sm:text-sm/6">
+                    </div>
+                </div>
 
-				</div>
-				<div class="mt-2">
-					<!-- Strong Password -->
-					<div class="max-w-sm">
-						<div class="flex">
-							<div class="relative flex-1">
-								<input @bind-value="UserModel.Password" type="password"
-									id="hs-strong-password-with-indicator-and-hint-in-popover"
-									class="block w-full rounded-md bg-white dark:bg-zinc-900 px-3 py-1.5 text-base text-gray-900 dark:text-white outline outline-1 -outline-offset-1 outline-zinc-500 dark:outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 sm:text-sm/6"
-									placeholder="Enter password">
-								<div id="hs-strong-password-popover"
-									class="hidden absolute z-10 w-full bg-white shadow-md rounded-lg p-4 dark:bg-neutral-800 dark:border dark:border-neutral-700 dark:divide-neutral-700">
-									<div id="hs-strong-password-in-popover" data-hs-strong-password='{
+                <div>
+                    <label class="text-sm/6 block font-medium text-gray-900 dark:text-white">Last name</label>
+                    <div class="mt-2">
+                        <input @bind-value="UserModel!.Lastname" placeholder="Enter your last name"
+                               class="outline-1 -outline-offset-1 block w-full rounded-md px-3 py-1.5 text-base text-gray-900 outline outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 dark:bg-zinc-900 dark:text-white sm:text-sm/6">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-sm/6 block font-medium text-gray-900 dark:text-white">Display name</label>
+                <div class="mt-2">
+                    <input @bind-value="UserModel!.Displayname" placeholder="Enter your display name"
+                           class="outline-1 -outline-offset-1 block w-full rounded-md px-3 py-1.5 text-base text-gray-900 outline outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 dark:bg-zinc-900 dark:text-white sm:text-sm/6">
+                </div>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm/6 block font-medium text-gray-900 dark:text-white">Password</label>
+
+                </div>
+                <div class="mt-2">
+                    <!-- Strong Password -->
+                    <div class="max-w-sm">
+                        <div class="flex">
+                            <div class="flex-1 relative">
+                                <input @bind-value="UserModel.Password" type="password"
+                                       id="hs-strong-password-with-indicator-and-hint-in-popover"
+                                       class="outline-1 -outline-offset-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 dark:bg-zinc-900 dark:text-white dark:outline-zinc-500 sm:text-sm/6"
+                                       placeholder="Enter password">
+                                <div id="hs-strong-password-popover"
+                                     class="z-10 absolute hidden w-full rounded-lg bg-white p-4 shadow-md dark:bg-neutral-800 dark:border dark:border-neutral-700 dark:divide-neutral-700">
+                                    <div id="hs-strong-password-in-popover" data-hs-strong-password='{
             "target": "#hs-strong-password-with-indicator-and-hint-in-popover",
             "hints": "#hs-strong-password-popover",
             "stripClasses": "hs-strong-password:opacity-100 hs-strong-password-accepted:bg-teal-500 h-2 flex-auto rounded-full bg-blue-500 opacity-50 mx-1",
             "mode": "popover"
-          }' class="flex mt-2 -mx-1">
-									</div>
+          }' class="-mx-1 mt-2 flex">
+                                    </div>
 
-									<h4 class="mt-3 text-sm font-semibold text-gray-800 dark:text-white">
-										Your password must contain:
-									</h4>
+                                    <h4 class="mt-3 text-sm font-semibold text-gray-800 dark:text-white">
+                                        Your password must contain:
+                                    </h4>
 
-									<ul class="space-y-1 text-sm text-gray-500 dark:text-neutral-500">
-										<li data-hs-strong-password-hints-rule-text="min-length"
-											class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-											<span class="hidden" data-check="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<polyline points="20 6 9 17 4 12"></polyline>
-												</svg>
-											</span>
-											<span data-uncheck="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<path d="M18 6 6 18"></path>
-													<path d="m6 6 12 12"></path>
-												</svg>
-											</span>
-											Minimum number of characters is 6.
-										</li>
-										<li data-hs-strong-password-hints-rule-text="lowercase"
-											class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-											<span class="hidden" data-check="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<polyline points="20 6 9 17 4 12"></polyline>
-												</svg>
-											</span>
-											<span data-uncheck="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<path d="M18 6 6 18"></path>
-													<path d="m6 6 12 12"></path>
-												</svg>
-											</span>
-											Should contain lowercase.
-										</li>
-										<li data-hs-strong-password-hints-rule-text="uppercase"
-											class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-											<span class="hidden" data-check="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<polyline points="20 6 9 17 4 12"></polyline>
-												</svg>
-											</span>
-											<span data-uncheck="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<path d="M18 6 6 18"></path>
-													<path d="m6 6 12 12"></path>
-												</svg>
-											</span>
-											Should contain uppercase.
-										</li>
-										<li data-hs-strong-password-hints-rule-text="numbers"
-											class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-											<span class="hidden" data-check="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<polyline points="20 6 9 17 4 12"></polyline>
-												</svg>
-											</span>
-											<span data-uncheck="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<path d="M18 6 6 18"></path>
-													<path d="m6 6 12 12"></path>
-												</svg>
-											</span>
-											Should contain numbers.
-										</li>
-										<li data-hs-strong-password-hints-rule-text="special-characters"
-											class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-											<span class="hidden" data-check="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<polyline points="20 6 9 17 4 12"></polyline>
-												</svg>
-											</span>
-											<span data-uncheck="">
-												<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-													width="24" height="24" viewBox="0 0 24 24" fill="none"
-													stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round">
-													<path d="M18 6 6 18"></path>
-													<path d="m6 6 12 12"></path>
-												</svg>
-											</span>
-											Should contain special characters.
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- End Strong Password -->
-				</div>
-			</div>
+                                    <ul class="space-y-1 text-sm text-gray-500 dark:text-neutral-500">
+                                        <li data-hs-strong-password-hints-rule-text="min-length"
+                                            class="flex items-center gap-x-2 hs-strong-password-active:text-teal-500">
+                                            <span class="hidden" data-check="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                            </span>
+                                            <span data-uncheck="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path d="M18 6 6 18"></path>
+                                                    <path d="m6 6 12 12"></path>
+                                                </svg>
+                                            </span>
+                                            Minimum number of characters is 6.
+                                        </li>
+                                        <li data-hs-strong-password-hints-rule-text="lowercase"
+                                            class="flex items-center gap-x-2 hs-strong-password-active:text-teal-500">
+                                            <span class="hidden" data-check="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                            </span>
+                                            <span data-uncheck="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path d="M18 6 6 18"></path>
+                                                    <path d="m6 6 12 12"></path>
+                                                </svg>
+                                            </span>
+                                            Should contain lowercase.
+                                        </li>
+                                        <li data-hs-strong-password-hints-rule-text="uppercase"
+                                            class="flex items-center gap-x-2 hs-strong-password-active:text-teal-500">
+                                            <span class="hidden" data-check="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                            </span>
+                                            <span data-uncheck="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path d="M18 6 6 18"></path>
+                                                    <path d="m6 6 12 12"></path>
+                                                </svg>
+                                            </span>
+                                            Should contain uppercase.
+                                        </li>
+                                        <li data-hs-strong-password-hints-rule-text="numbers"
+                                            class="flex items-center gap-x-2 hs-strong-password-active:text-teal-500">
+                                            <span class="hidden" data-check="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                            </span>
+                                            <span data-uncheck="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path d="M18 6 6 18"></path>
+                                                    <path d="m6 6 12 12"></path>
+                                                </svg>
+                                            </span>
+                                            Should contain numbers.
+                                        </li>
+                                        <li data-hs-strong-password-hints-rule-text="special-characters"
+                                            class="flex items-center gap-x-2 hs-strong-password-active:text-teal-500">
+                                            <span class="hidden" data-check="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                            </span>
+                                            <span data-uncheck="">
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path d="M18 6 6 18"></path>
+                                                    <path d="m6 6 12 12"></path>
+                                                </svg>
+                                            </span>
+                                            Should contain special characters.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Strong Password -->
+                </div>
+            </div>
 
-			<div>
-				<div class="flex items-center justify-between">
-					<label class="block text-sm/6 font-medium text-gray-900 dark:text-white">Confirm Password</label>
+            <div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm/6 block font-medium text-gray-900 dark:text-white">Confirm Password</label>
 
-				</div>
-				<div class="mt-2">
-					<input @bind-value="UserModel!.PasswordConfirmation" type="password" autocomplete="current-password"
-						class="block w-full rounded-md bg-white dark:bg-zinc-900 px-3 py-1.5 text-base text-gray-900 dark:text-white outline outline-1 -outline-offset-1 outline-zinc-500 dark:outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 sm:text-sm/6">
-				</div>
-			</div>
+                </div>
+                <div class="mt-2">
+                    <input @bind-value="UserModel!.PasswordConfirmation" type="password" autocomplete="current-password" placeholder="Enter password"
+                           class="outline-1 -outline-offset-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 dark:bg-zinc-900 dark:text-white dark:outline-zinc-500 sm:text-sm/6">
+                </div>
+            </div>
 
-			<div>
-				<button type="submit"
-					class="flex w-full justify-center rounded-md bg-purple-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600">Register</button>
-			</div>
-		</EditForm>
+            <div>
+                <button type="submit"
+                        class="text-sm/6 flex w-full justify-center rounded-md bg-purple-600 px-3 py-1.5 font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600">
+                    @if (isLoading)
+                    {
+                        <div class="inline-block size-6 animate-spin rounded-full border-[3px] border-current border-t-transparent text-blue-600 dark:text-blue-500" role="status" aria-label="loading">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <span>Register</span>
+                    }
+                </button>
+            </div>
+        </EditForm>
 
-		<p class="mt-10 text-center text-sm/6 text-gray-500">
-			Already have an account?
-			<a href="/auth/login" class="font-semibold text-cyan-500 hover:text-cyan-300">Click here to
-				sign in!</a>
-		</p>
-	</div>
+        <p class="text-sm/6 mt-10 text-center text-gray-500">
+            Already have an account?
+            <a href="/auth/login" class="font-semibold text-cyan-500 hover:text-cyan-300">
+                Click here to
+                sign in!
+            </a>
+        </p>
+    </div>
 </div>
 
 @code {
 
-	private UserRegistrationModel? UserModel { get; set; } = new();
+    private UserRegistrationModel? UserModel { get; set; } = new();
+    private bool isLoading { get; set; }
 
-	private async Task HandleSubmit()
-	{
-		string response = await Authentication.RegisterAsync(UserModel!);
+    private async Task HandleSubmit()
+    {
+        isLoading = true;
+        string response = await Authentication.RegisterAsync(UserModel!);
 
-		if (response == "success")
-		{
-			Navigation.NavigateTo("/");
-		}
-		else
-		{
+        if (response == "success")
+        {
+            Navigation.NavigateTo("/auth/emailconfirmationsend");
+        }
+        else
+        {
+            // Handle error message
+        }
 
-		}
-	}
+        isLoading = false;
+    }
 
-	protected override async Task OnAfterRenderAsync(bool isFirstRender)
-	{
-		if (isFirstRender)
-		{
-			await ReloadPreline();
-		}
-	}
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        if (isFirstRender)
+        {
+            await ReloadPreline();
+        }
+    }
 
-	private async Task ReloadPreline()
-	{
-		await JSRuntime.InvokeVoidAsync("loadScript", "https://cdn.jsdelivr.net/npm/preline/dist/preline.js");
+    private async Task ReloadPreline()
+    {
+        await JSRuntime.InvokeVoidAsync("loadScript", "https://cdn.jsdelivr.net/npm/preline/dist/preline.js");
 
-		await JSRuntime.InvokeVoidAsync("window.HSStaticMethods.autoInit");
-	}
+        await JSRuntime.InvokeVoidAsync("window.HSStaticMethods.autoInit");
+    }
 }
 
-<!-- 
+<!--
 block w-full rounded-md bg-white dark:bg-zinc-900 px-3 py-1.5 text-base text-gray-900 dark:text-white outline outline-1 -outline-offset-1 outline-zinc-500 dark:outline-zinc-500 placeholder:text-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-zinc-400 sm:text-sm/6
 -->

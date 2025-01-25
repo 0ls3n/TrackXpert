@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using TrackXpert_API.Data;
 using TrackXpert_API.Models;
+using TrackXpert_API.Services;
 
 namespace TrackXpert_API.Controllers
 {
@@ -18,16 +19,28 @@ namespace TrackXpert_API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AuthController(UserManager<User> userManager, IConfiguration configuration)
+        public AuthController(UserManager<User> userManager, IConfiguration configuration, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
+            /* Operation Contract (Login User)
+             * Input: username/email(string), password(string)
+             * Output: AccessToken Bearer (string)
+             * 
+             * Pre condition: User must exist in the database, and the user´s email must be confirmed.
+             * The password must be the same as when the user registered
+             * 
+             * Post condition: An accessToken was sent with the response to the user
+             */
+
             var user = await _userManager.FindByEmailAsync(loginDto.Email!);
             if (user == null)
             {
@@ -49,7 +62,7 @@ namespace TrackXpert_API.Controllers
 
             var accessToken = JwtTokenGenerator.GenerateToken(user, _configuration);
 
-            var refreshToken = GenerateRefreshToken();
+            var refreshToken = JwtTokenGenerator.GenerateRefreshToken();
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _userManager.UpdateAsync(user);
@@ -60,8 +73,34 @@ namespace TrackXpert_API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            // Make a check on if the user already exists, if it does then throw an error message
-            var user = new User { UserName = registerDto.Email, Email = registerDto.Email };
+            /* Operation Contract (Register User)
+             * Input: username/email(string), password(string), firstName(string), lastName(string)
+             * Output: Success message, and send an mail to the user with the confirm link
+             * 
+             * Pre condition: User must not exist in the database already
+             * 
+             * Post condition: A user instance was created and saved to the database
+             */
+
+            if (await _userManager.Users.SingleOrDefaultAsync(x=> x.Displayname == registerDto.Displayname) != null)
+            {
+                return BadRequest("A user already has that displayname");
+            }
+
+            if (await _userManager.FindByEmailAsync(registerDto.Email!) != null)
+            {
+                return BadRequest("A user is already registered with that email");
+            }
+
+            var user = new User 
+            { 
+                UserName = registerDto.Email,
+                Email = registerDto.Email, 
+                Firstname = registerDto.Firstname,
+                Lastname = registerDto.Lastname,
+                Displayname = registerDto.Displayname
+            };
+
             var result = await _userManager.CreateAsync(user, registerDto.Password!);
 
             if (!result.Succeeded)
@@ -80,39 +119,7 @@ namespace TrackXpert_API.Controllers
             Console.WriteLine(confirmationLink);
 
             // Emailsender service here to send the confirmation link to the users mail account
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
-            {
-                Port = 587,
-                Credentials = new NetworkCredential("Rasmus782@gmail.com", "nlgd xugb tahd dvva"),
-                EnableSsl = true
-            };
-
-            MailMessage mailMessage = new MailMessage()
-            {
-                From = new MailAddress("Rasmus782@gmail.com"),
-                Subject = "Confirmation email",
-                Body = @"
-                        <html>
-                        <body style='background-color: #1c1c1c; color: #ffffff; font-family: Arial, sans-serif; padding: 20px; text-align: center;'>
-                            <div style='max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; background-color: #2c2c2c;'>
-                                <img src='https://drive.google.com/uc?id=1UzqjX47F9E9DwH6gP25eicWmvWfrc76Y' alt='TrackXpert Logo' style='margin-bottom: 20px; width: 64px; height: 64px;'>
-                                <h2 style='color: #ffffff; font-size: 24px; margin: 0;'>Confirm Your Email</h2>
-                                <p style='color: #b3b3b3; font-size: 16px; margin: 20px 0;'>Hi there! You're just one step away from accessing your TrackXpert account. Please click the button below to confirm your email address:</p>
-                                <a href='" + confirmationLink + @"'
-                                   style='display: inline-block; background-color: #8e44ad; color: #ffffff; text-decoration: none; 
-                                          padding: 12px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;'>
-                                   Confirm Email
-                                </a>
-                                <p style='color: #757575; font-size: 12px; margin-top: 20px;'>If you didn’t sign up for TrackXpert, you can safely ignore this email.</p>
-                            </div>
-                        </body>
-                        </html>",
-                IsBodyHtml = true
-            };
-
-            mailMessage.To.Add(user.Email!);
-
-            smtpClient.Send(mailMessage);
+            await _emailService.SendConfirmationLinkAsync(confirmationLink!, user);
 
             return Ok("Registration successful! Please check your email to confirm your account.");
         }
@@ -120,6 +127,15 @@ namespace TrackXpert_API.Controllers
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
+            /* Operation Contract (Confirm User)
+             * Input: userId(string), token(string)
+             * Output: Success message, and redirect to web app confirm success site
+             * 
+             * Pre condition: User must exist in the database already, and user must not be confirmed already
+             * 
+             * Post condition: A user's email was confirmed and saved to the database (attribute modification)
+             */
+
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user is not null)
@@ -130,7 +146,7 @@ namespace TrackXpert_API.Controllers
 
                     if (identity.Succeeded)
                     {
-                        var blazorAppUrl = $"https://localhost:7139";
+                        var blazorAppUrl = $"https://localhost:7139/auth/emailconfirmedsuccess";
                         return Redirect(blazorAppUrl);
                     }
 
@@ -148,9 +164,58 @@ namespace TrackXpert_API.Controllers
             }
         }
 
+        [HttpGet("resend-confirmation")]
+        public async Task<IActionResult> ResendConfirmationLink(string email)
+        {
+            /* Operation Contract (Resend confirmation to user)
+             * Input: email(string)
+             * Output: Success message, and send mail to the user with confirmation link
+             * 
+             * Pre condition: User must exist in the database already, and user must not be confirmed already
+             * 
+             * Post condition: none
+             */
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound("User is not found");
+            }
+
+            if (user.EmailConfirmed == true)
+            {
+                return BadRequest("Email is already confirmed");
+            }
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var confirmationLink = Url.Action(
+                "ConfirmEmail",
+                "Auth",
+                new { userId = user.Id, token = token },
+                Request.Scheme);
+
+            await _emailService.SendConfirmationLinkAsync(confirmationLink!, user);
+
+            return Ok("Registration successful! Please check your email to confirm your account.");
+
+        }
+
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto refreshToken)
         {
+            /* Operation Contract (Refresh user authorization)
+             * Input: refreshToken(string)
+             * Output: AccessToken Bearer (string)
+             * 
+             * Pre condition: User must exist in the database, and the user´s email must be confirmed.
+             * The refreshToken must be valid
+             * 
+             * Post condition: An accessToken was sent with the response to the user, and a new refreshToken
+             * will be generated and saved to the database
+             */
+
             if (refreshToken == null || string.IsNullOrEmpty(refreshToken.RefreshToken))
             {
                 return BadRequest("Invalid request");
@@ -164,20 +229,12 @@ namespace TrackXpert_API.Controllers
 
             var newAccessToken = JwtTokenGenerator.GenerateToken(user, _configuration);
 
-            var newRefreshToken = GenerateRefreshToken();
+            var newRefreshToken = JwtTokenGenerator.GenerateRefreshToken();
             user.RefreshToken = newRefreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _userManager.UpdateAsync(user);
 
             return Ok(new { accessToken = newAccessToken, refreshToken = newRefreshToken });
-        }
-
-        private string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[128];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
         }
     }
 }

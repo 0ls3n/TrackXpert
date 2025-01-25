@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using TrackXpert_API.Data;
+using TrackXpert_API.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,6 +66,8 @@ builder.Services.AddAuthentication(options =>
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
 	};
 });
+
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 builder.WebHost.ConfigureKestrel(options =>
 {

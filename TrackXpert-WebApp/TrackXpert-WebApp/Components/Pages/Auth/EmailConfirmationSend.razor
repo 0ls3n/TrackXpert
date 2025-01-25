@@ -1,0 +1,38 @@
+﻿@page "/auth/emailconfirmationsend"
+
+<div class="mx-auto flex size-full max-w-[50rem] flex-col">
+    <!-- ========== HEADER ========== -->
+    <header class="z-50 mb-auto flex w-full justify-center py-4">
+        <nav class="px-4 sm:px-6 lg:px-8">
+            <a class="flex-none text-xl font-semibold dark:text-white sm:text-3xl" href="/" aria-label="Brand">
+                <img class="h-24" src="images/logo.png" />
+            </a>
+        </nav>
+    </header>
+    <!-- ========== END HEADER ========== -->
+    <!-- ========== MAIN CONTENT ========== -->
+    <main id="content">
+        <div class="px-4 py-10 text-center sm:px-6 lg:px-8">
+            <h1 class="block bg-gradient-to-tl bg-clip-text text-5xl font-bold text-green-600 sm:text-6xl">Registered!</h1>
+            <p class="mt-5 text-gray-600 dark:text-neutral-400">You need to confirm your account, check your email for a confirmation link</p>
+            <div class="mt-5 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
+                <a class="inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-purple-600 px-4 py-3 text-sm font-medium text-white hover:bg-purple-700 focus:outline-none focus:bg-purple-700 disabled:opacity-50 disabled:pointer-events-none sm:w-auto" href="/auth/login">
+                    Resend confirmation link
+                </a>
+            </div>
+            <button class="mt-5 text-cyan-500 underline hover:text-cyan-300">Click here if you entered the wrong email address</button>
+        </div>
+    </main>
+    <!-- ========== END MAIN CONTENT ========== -->
+    <!-- ========== FOOTER ========== -->
+    <footer class="mt-auto py-5 text-center">
+        <div class="mx-auto max-w-[85rem] px-4 sm:px-6 lg:px-8">
+            <p class="text-sm text-gray-500 dark:text-neutral-500">© All Rights Reserved. 2022.</p>
+        </div>
+    </footer>
+    <!-- ========== END FOOTER ========== -->
+</div>
+
+@code {
+
+}
