@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using TrackXpert_ClassLibrary.Models.TrackData;
 using TrackXpert_WebApp.Services;
 
-namespace TrackXpert_WebApp.Components.Pages;
+namespace TrackXpert_WebApp.Components.Pages.Dashboard.Pages;
 
 public partial class UploadTrack : ComponentBase
 {

@@ -1,0 +1,118 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Authentication.JwtBearer
+@using TrackXpert_WebApp.Components.Pages.Dashboard.Layout
+
+@rendermode InteractiveServer
+@page "/upload-track"
+@layout DashboardLayout
+@attribute [Authorize]
+
+<PageTitle>Upload Track - TrackXpert</PageTitle>
+
+<h1 class="text-center text-5xl dark:text-white">Upload your track!</h1>
+
+
+
+<div class="mx-auto md:w-1/2 md:pt-5">
+    <div class="flex items-center justify-center">
+        <label for="dropzone-file"
+            class="border-2 flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:bg-zinc-700 dark:border-zinc-300 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+            <div class="flex flex-col items-center justify-center pb-6 pt-5">
+                <svg class="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                </svg>
+                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to
+                        upload</span> or drag and drop</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">WAV, MP3, AVAC (MAX. 200 MB)</p>
+            </div>
+            <InputFile OnChange="HandleFileSelected" accept=".wav, .mp3" id="dropzone-file" type="file"
+                class="hidden" />
+        </label>
+    </div>
+    <br />
+    @if (selectedFile != null)
+    {
+        <EditForm Model="trackMetadata" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="flex flex-col space-y-4">
+
+                <div class="flex flex-col space-y-2">
+                    <label for="@trackMetadata!.Title" class="dark:text-white">Song title: </label>
+                    <InputText @bind-value="trackMetadata.Title" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="Song title" />
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                    <label for="@trackMetadata.Genre" class="dark:text-white">Genre: </label>
+                    <select @bind="trackMetadata.Genre" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                        @foreach (var key in Enum.GetValues(typeof(TrackGenre)).Cast<TrackGenre>())
+                        {
+                            <option value="@key">@key.GetDisplayName()</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                    <label for="@trackMetadata.ReleaseDate" class="dark:text-white">Release date: </label>
+                    <InputDate @bind-Value="trackMetadata.ReleaseDate" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"/>
+                </div>
+
+                <div class="flex justify-center gap-2">
+
+                    <div class="flex flex-col space-y-2 w-full">
+                        <label for="@trackMetadata.Key" class="dark:text-white">Key: </label>
+                        <select @bind="trackMetadata.Key" class="w-full py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                            @foreach (var key in Enum.GetValues(typeof(TrackKey)).Cast<TrackKey>())
+                            {
+                                <option value="@key">@key.GetDisplayName()</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col space-y-2 w-full">
+                        <label for="@trackMetadata.Bpm" class="dark:text-white">BPM: </label>
+                        <InputNumber @bind-value="trackMetadata.Bpm" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="BPM" />
+                    </div>
+                    
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                    <label for="@trackMetadata.Tags" class="dark:text-white">Tags: </label>
+                    <form @onsubmit="AddTag">
+                        <InputText @oninput="e => CurrentTag = e.Value!.ToString()!" @bind-value="CurrentTag"
+                            class="w-full py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="Add a tag" />
+                    </form>
+                </div>
+
+                @if (trackMetadata.Tags!.Count != 0)
+                {
+                    <div>
+                        <ul class="tag-list">
+                            @foreach (var tag in trackMetadata.Tags!)
+                            {
+                                <li class="tag-item">
+                                    @tag <button class="remove-tag" @onclick="() => RemoveTag(tag)">x</button>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <div class="flex flex-row items-center space-x-2">
+                    <InputCheckbox @bind-value="trackMetadata.IsExplicit" type="checkbox" placeholder="Is Explicit?" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" />
+                    <label for="@trackMetadata.IsExplicit" class="dark:text-white">Is Explicit?</label>
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                    <label class="dark:text-white" for="@trackMetadata.Description">Description: </label>
+                    <InputTextArea id="description" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="This is a textarea placeholder" @bind-Value="trackMetadata.Description" rows="5"/>
+                </div>
+
+                <button class="w-full sm:w-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-transparent bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:bg-purple-700 disabled:opacity-50 disabled:pointer-events-none" type="submit">Upload track!</button>
+                <ValidationSummary />
+            </div>
+        </EditForm>
+    }
+</div>
