@@ -12,10 +12,6 @@ TrackXpert is a cloud-based platform designed to help music producers manage, re
 - **Task Progress Tracking**: Keep track of feedback resolutions and actionable tasks.
 - **Responsive Design**: Accessible from both desktop and mobile devices for a seamless user experience.
 
-## Getting Started
-
-To start using **TrackXpert**, sign up on the [TrackXpert website](https://www.trackxpert.com) and follow the simple steps to upload your tracks, collect feedback, and start managing your workflow.
-
 ### Prerequisites
 
 To access and use TrackXpert, you need:
@@ -23,15 +19,6 @@ To access and use TrackXpert, you need:
 - A web browser (Chrome, Firefox, Safari, etc.)
 - An internet connection to access the cloud platform
 - A free or premium account (depending on the feature set you need)
-
-## Pricing
-
-TrackXpert offers a **freemium** model:
-
-- **Free Plan**: Limited features for personal use.
-- **Premium Plan**: Unlock advanced features, more storage, and enhanced AI-powered feedback management.
-
-Visit the [TrackXpert Pricing Page](https://www.trackxpert.com/pricing) for more information.
 
 ## Technologies Used
 
@@ -43,4 +30,3 @@ Visit the [TrackXpert Pricing Page](https://www.trackxpert.com/pricing) for more
 ## Contact
 
 - **Rasmus Olsen** - [Rasmus782@gmail.com](mailto:Rasmus782@gmail.com)
-- **TrackXpert Website**: [https://www.trackxpert.com](https://www.trackxpert.com)
